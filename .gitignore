@@ -1,0 +1,21 @@
+# environments and caches (never commit)
+.venv/
+.hfcache/
+hf/
+hf_cache/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# cluster run logs
+results/slurm-*.log
+*.out
+
+# upstream reference repo (someone else's code, kept locally only)
+ref/
+
+# large artifacts / archives
+*.zip
+*.npy
+*.safetensors
+.DS_Store
