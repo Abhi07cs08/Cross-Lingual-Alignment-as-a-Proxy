@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=cla-mt
-#SBATCH --account=rrg-annielee
-#SBATCH --gpus-per-node=h100:1
+#SBATCH --account=def-annielee
+#SBATCH --gpus-per-node=a100:1
 #SBATCH --cpus-per-task=6
-#SBATCH --mem=48G
-#SBATCH --time=08:00:00
+#SBATCH --mem=64G
+#SBATCH --time=24:00:00
 #SBATCH --output=results/slurm-mt-%j.log
 #SBATCH --mail-user=abhinnkaushik@gmail.com
 #SBATCH --mail-type=BEGIN,END,FAIL
@@ -18,6 +18,5 @@ export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 cd src
 python run_repro.py --model Qwen/Qwen3-14B-Base \
-  --langs en,de,es,fr,ru,zh,hi,sw,bn,ta,th,tr --targets es,zh,sw,hi,ru \
-  --n-align 500 --n-translate 200 --batch-size 16 \
+  --batch-size 16 \
   --out ../results/mt_baseline_qwen3-14b-base.json

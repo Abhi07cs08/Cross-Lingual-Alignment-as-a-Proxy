@@ -25,7 +25,10 @@ alignment to English and reasoning accuracy on MGSM (`juletxara/mgsm`, 11 langs)
 AfriMGSM (`masakhane/afrimgsm`, 17 African langs) with 8-shot chain-of-thought, then
 correlates alignment-to-English against accuracy across languages. Tests whether the
 English-pivot that holds for translation also holds for reasoning, and whether it holds
-within low-resource languages. *Status: running.*
+within low-resource languages. *Status: first result in on Qwen3-14B-Base (MGSM Pearson 0.67, AfriMGSM 0.42). The harness
+is now set up for the final robust run: all languages, multiple models, multi-pivot
+alignment, CJK-safe answer extraction, bootstrap CIs, and a resource-controlled partial
+correlation. See `docs/RUNBOOK.md` and `docs/SYNC.md`.*
 
 ## Layout
 

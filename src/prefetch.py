@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-"""Run ONCE on the LOGIN NODE (internet) before any job. Caches the model, the FLORES+
-configs, and the MGSM / AfriMGSM datasets into $HF_HOME so the compute nodes run offline.
+"""Run ONCE on the LOGIN NODE (internet) before any job. Caches the model weights, the
+FLORES+ configs, and the MGSM / AfriMGSM datasets into $HF_HOME so the compute nodes run
+offline.
 
-  python prefetch.py --task all          # everything (MT + both reasoning sets)
-  python prefetch.py --task mt           # MT baseline only
-  python prefetch.py --task mgsm         # reasoning: MGSM only
-  python prefetch.py --task afrimgsm     # reasoning: AfriMGSM only
+  python prefetch.py --task all                                  # MT + both reasoning sets
+  python prefetch.py --task mgsm                                 # one task's data only
+  python prefetch.py --models Qwen/Qwen3-14B-Base,google/gemma-3-12b-pt
+  python prefetch.py --task all --skip-model                     # data only, weights cached
 
 FLORES+ is gated on HuggingFace: export HF_TOKEN and accept the dataset terms first.
+Gated models (gemma, Ministral) also need the terms accepted on their model page and a
+valid HF_TOKEN. A few FAIL lines on obscure FLORES configs are fine; those langs are
+skipped by the run too.
 """
 import argparse, os
 from run_repro import FLORES as MT_FLORES
@@ -17,8 +21,9 @@ from run_reason import MGSM, AFRIMGSM, DATASETS
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--task", choices=["all", "mt", "mgsm", "afrimgsm"], default="all")
-    ap.add_argument("--model", default="Qwen/Qwen3-14B-Base")
-    ap.add_argument("--skip-model", action="store_true", help="if the weights are already cached")
+    ap.add_argument("--models", default="Qwen/Qwen3-14B-Base",
+                    help="comma-separated HF model ids to cache")
+    ap.add_argument("--skip-model", action="store_true", help="skip all weight downloads")
     args = ap.parse_args()
     print("HF_HOME =", os.environ.get("HF_HOME", "(UNSET - export it to a scratch path!)"))
 
@@ -53,9 +58,13 @@ def main():
 
     if not args.skip_model:
         from transformers import AutoModelForCausalLM, AutoTokenizer
-        AutoTokenizer.from_pretrained(args.model)
-        AutoModelForCausalLM.from_pretrained(args.model)
-        print("  model cached", args.model, flush=True)
+        for m in [x for x in args.models.split(",") if x]:
+            try:
+                AutoTokenizer.from_pretrained(m)
+                AutoModelForCausalLM.from_pretrained(m)
+                print("  model cached", m, flush=True)
+            except Exception as e:
+                print("  model FAIL ", m, str(e)[:160], flush=True)
     print("prefetch done.")
 
 

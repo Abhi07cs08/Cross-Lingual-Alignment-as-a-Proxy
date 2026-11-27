@@ -18,4 +18,6 @@ ref/
 *.zip
 *.npy
 *.safetensors
+
+# macOS
 .DS_Store

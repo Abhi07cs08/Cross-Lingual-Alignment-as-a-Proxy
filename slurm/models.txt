@@ -1,0 +1,13 @@
+# Models for the final run, one HF id per line. Lines starting with # are ignored.
+# dispatch.sh reads this file automatically if MODELS is not set on the command line.
+#
+# Ungated, already cached, safe to run now:
+Qwen/Qwen3-14B-Base
+#
+# Gated: uncomment AFTER (1) accepting the model's terms on its HF page while logged in,
+# (2) exporting a valid HF_TOKEN, (3) caching it with:
+#       python src/prefetch.py --models <id> --task all --skip-model=false
+# Confirm the exact ids on huggingface.co before enabling; these are the intended families:
+# google/gemma-3-12b-pt
+# mistralai/Ministral-8B-Instruct-2410
+# Qwen/Qwen3-14B            # the instruct/post-trained sibling of the base model

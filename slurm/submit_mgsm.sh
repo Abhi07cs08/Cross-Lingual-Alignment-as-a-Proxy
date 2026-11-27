@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=cla-mgsm
-#SBATCH --account=rrg-annielee
-#SBATCH --gpus-per-node=h100:1
+#SBATCH --account=def-annielee
+#SBATCH --gpus-per-node=a100:1
 #SBATCH --cpus-per-task=6
-#SBATCH --mem=48G
-#SBATCH --time=08:00:00
+#SBATCH --mem=64G
+#SBATCH --time=24:00:00
 #SBATCH --output=results/slurm-mgsm-%j.log
 #SBATCH --mail-user=abhinnkaushik@gmail.com
 #SBATCH --mail-type=BEGIN,END,FAIL
@@ -18,5 +18,5 @@ export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 cd src
 python run_reason.py --dataset mgsm --model Qwen/Qwen3-14B-Base \
-  --n-align 300 --n-reason 250 --batch-size 8 \
+  --batch-size 8 \
   --out ../results/reason_mgsm_qwen3-14b-base.json
